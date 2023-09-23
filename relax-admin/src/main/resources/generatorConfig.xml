@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <properties resource="application.properties"/>
+    <context id="mysql" targetRuntime="MyBatis3">
+        <!-- 字段带`,解决列表跟关键字冲突问题 -->
+        <property name="autoDelimitKeywords" value="true"/>
+        <property name="beginningDelimiter" value="`"/>
+        <property name="endingDelimiter" value="`"/>
+
+        <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
+        <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin"/>
+        <!-- Lombok插件 -->
+        <plugin type="com.itfsw.mybatis.generator.plugins.LombokPlugin">
+            <!-- @Data 默认开启,同时插件会对子类自动附加@EqualsAndHashCode(callSuper = true)，@ToString(callSuper = true) -->
+            <property name="@Data" value="true"/>
+            <!-- @Builder 必须在 Lombok 版本 >= 1.18.2 的情况下开启，对存在继承关系的类自动替换成@SuperBuilder -->
+            <property name="@Builder" value="false"/>
+            <!-- @NoArgsConstructor 和 @AllArgsConstructor 使用规则和Lombok一致 -->
+            <property name="@AllArgsConstructor" value="false"/>
+            <property name="@NoArgsConstructor" value="false"/>
+            <!-- @Getter、@Setter、@Accessors 等使用规则参见官方文档 -->
+            <property name="@Accessors(chain = true)" value="false"/>
+            <!-- 临时解决IDEA工具对@SuperBuilder的不支持问题，开启后(默认未开启)插件在遇到@SuperBuilder注解时会调用ModelBuilderPlugin来生成相应的builder代码 -->
+            <property name="supportSuperBuilderForIdea" value="false"/>
+        </plugin>
+        <!--是否忽略注释的生成 true -->
+        <commentGenerator>
+            <!-- 这个元素用来去除指定生成的注释中是否包含生成的日期 false:表示包含 -->
+            <!-- 如果生成日期，会造成即使修改一个字段，整个实体类所有属性都会发生变化，不利于版本控制，所以
+            设置为true -->
+            <property name="suppressDate" value="true"/>
+            <!-- 是否去除自动生成的注释 true：是；false：否 -->
+            <property name="suppressAllComments" value="true"/>
+        </commentGenerator>
+        <!--数据库链接地址账号密码-->
+        <!--数据库链接URL，用户名、密码 -->
+        <jdbcConnection driverClass="${spring.datasource.driver-class-name}"
+                        connectionURL="${spring.datasource.url}&amp;nullCatalogMeansCurrent=true"
+                        userId="${spring.datasource.username}"
+                        password="${spring.datasource.password}">
+        </jdbcConnection>
+        <!--生成Model类存放位置 entity-->
+        <javaModelGenerator targetPackage="com.relax.entity" targetProject="./src/main/java">
+            <!--是否合并-->
+            <property name="enableSubPackages" value="true"/>
+            <!--去除空格-->
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+        <!--生成映射文件存放位置-->
+        <sqlMapGenerator targetPackage="mapper" targetProject="./src/main/resources">
+            <!--是否合并-->
+            <property name="enableSubPackages" value="true"/>
+        </sqlMapGenerator>
+        <!--生成Dao接口存放位置-->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.relax.mapper" targetProject="./src/main/java">
+            <!--是否合并-->
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>
+        <!--生成对应表及类名-->
+        <table tableName="user" domainObjectName="User"></table>
+    </context>
+</generatorConfiguration>
